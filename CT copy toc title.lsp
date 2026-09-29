@@ -1,0 +1,37 @@
+(defun c:CT (/ src attribs srcval target tattribs att)
+  (setq src (car (entsel "\nPick source TOC block: ")))
+  (if (null src) (exit))
+
+  (setq attribs (entnext src))
+  (setq srcval nil)
+
+  (while (and attribs (= (cdr (assoc 0 (entget attribs))) "ATTRIB"))
+    (if (= (cdr (assoc 2 (entget attribs))) "PAGETITLE")
+      (setq srcval (cdr (assoc 1 (entget attribs))))
+    )
+    (setq attribs (entnext attribs))
+  )
+
+  (if (null srcval)
+    (progn (princ "\nPAGETITLE attribute not found.") (exit))
+  )
+
+  (princ (strcat "\nCopied: " srcval))
+  (princ "\nPick target TOC blocks (Enter to finish): ")
+
+  (while (setq target (car (entsel "\nPick target: ")))
+    (setq tattribs (entnext target))
+    (while (and tattribs (= (cdr (assoc 0 (entget tattribs))) "ATTRIB"))
+      (if (= (cdr (assoc 2 (entget tattribs))) "PAGETITLE")
+        (progn
+          (setq att (entget tattribs))
+          (setq att (subst (cons 1 srcval) (assoc 1 att) att))
+          (entmod att)
+          (entupd tattribs)
+        )
+      )
+      (setq tattribs (entnext tattribs))
+    )
+  )
+  (princ "\nDone.")
+)
