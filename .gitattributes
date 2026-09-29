@@ -1,0 +1,6 @@
+# Keep the docs site out of GitHub's "Download ZIP" so it only has the commands
+index.html  export-ignore
+id.html     export-ignore
+style.css   export-ignore
+images/     export-ignore
+.gitattributes export-ignore

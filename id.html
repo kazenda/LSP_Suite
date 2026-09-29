@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LSP Suite</title>
+<meta name="description" content="Kumpulan command AutoLISP untuk drafting interior di AutoCAD: TOC, layout, spec leader, dan alat gambar.">
+<link rel="alternate" hreflang="en" href="index.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="side" aria-label="Daftar isi">
+  <span class="label">Daftar sheet</span>
+  <ul>
+    <li class="group"><a href="#start">Mulai</a></li>
+    <li class="group"><a href="#quick">Alat cepat</a>
+      <ul>
+        <li><a href="#ad">AD</a></li>
+        <li><a href="#cc">CC</a></li>
+        <li><a href="#divv">DIVV / DIVH</a></li>
+        <li><a href="#ds">DS</a></li>
+        <li><a href="#numgrid">NUMGRID</a></li>
+        <li><a href="#pf">PF</a></li>
+      </ul>
+    </li>
+    <li class="group"><a href="#toc">TOC dan layout</a>
+      <ul>
+        <li><a href="#toc-block">Block TOC</a></li>
+        <li><a href="#toc-workflow">Alur kerja</a></li>
+        <li><a href="#pt">PT</a></li>
+        <li><a href="#ct">CT / CP / CPP</a></li>
+        <li><a href="#cw">CW / CTB</a></li>
+        <li><a href="#wqb">WQB</a></li>
+        <li><a href="#ws">WS / WSS</a></li>
+      </ul>
+    </li>
+    <li class="group"><a href="#spec">Spec dan leader</a>
+      <ul>
+        <li><a href="#spec-how">Cara kerja</a></li>
+        <li><a href="#spec-setup">Kode spec</a></li>
+        <li><a href="#sl">SL / SLSCALE</a></li>
+        <li><a href="#rr">RR / RZ</a></li>
+        <li><a href="#ee">EE</a></li>
+        <li><a href="#cs">CS</a></li>
+        <li><a href="#sy">SY</a></li>
+      </ul>
+    </li>
+    <li class="group"><a href="#ref">Daftar block</a></li>
+  </ul>
+</nav>
+
+<main>
+<!--
+  Versi Bahasa Indonesia dari index.html. Kalau mengubah isi di satu file,
+  ubah juga di file satunya. Cara menambah gambar ada di komentar atas index.html.
+-->
+
+<header>
+  <div class="lang-switch" aria-label="Bahasa"><a href="index.html" hreflang="en" lang="en">EN</a><span>ID</span></div>
+  <div class="titleblock">
+    <div class="tb-main">
+      <p class="tb-kicker">AutoLISP untuk AutoCAD</p>
+      <h1>LSP Suite</h1>
+      <p class="lede">Command yang saya buat untuk drafting interior. Isinya untuk pekerjaan yang berulang: memberi nomor sheet, menyamakan judul dengan daftar isi, dan menggambar spec leader yang tetap terhubung dengan labelnya.</p>
+    </div>
+    <div class="tb-cells">
+      <div><span>Digambar</span>Yeza</div>
+      <div><span>Bidang</span>Interior</div>
+      <div><span>Command</span>23</div>
+      <div><span>Kode</span><a href="https://github.com/kazenda/LSP_Suite">kazenda/LSP_Suite</a></div>
+    </div>
+  </div>
+  <div class="dim">Alat cepat · TOC · Spec</div>
+</header>
+
+<section id="start">
+  <h2><span class="bubble"><b>1</b><i>LSP</i></span>Mulai</h2>
+  <p>Setiap file <code>.lsp</code> berisi satu atau dua command. Nama command adalah kata pertama di nama file, jadi <code>SL_SPEC_LEADER...lsp</code> berisi command <kbd>SL</kbd>.</p>
+  <div class="legend">
+    <span class="name">SL</span>
+    <p>Semua yang ada di kotak kuning adalah command. Ketik di command line lalu tekan <b>Enter</b>, sama seperti mengetik <kbd>LINE</kbd> atau <kbd>COPY</kbd>.</p>
+  </div>
+  <div class="download">
+    <a class="btn" href="https://github.com/kazenda/LSP_Suite/archive/refs/heads/main.zip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M4 21h16"/></svg>
+      Download command
+    </a>
+    <small>.zip dari GitHub · selalu versi terbaru</small>
+  </div>
+  <ol class="steps">
+    <li><b>Extract ke folder yang tetap,</b> misalnya <code>D:\LSP Suite</code>, jangan di folder Downloads. AutoCAD mengingat lokasi file-nya, jadi kalau nanti dipindah atau dihapus, command-nya tidak bisa dimuat lagi.</li>
+    <li>Ketik <kbd>APPLOAD</kbd> di AutoCAD.</li>
+    <li>Untuk memuat file hanya di sesi ini, pilih file lalu klik <b>Load</b>.</li>
+    <li>Supaya dimuat otomatis setiap AutoCAD dibuka, klik <b>Contents...</b> di bagian Startup Suite lalu tambahkan file-filenya di sana.</li>
+  </ol>
+  <p class="note"><strong>Muncul peringatan keamanan?</strong>AutoCAD bertanya dulu sebelum memuat file dari folder yang belum dikenal. Klik <b>Load</b> atau <b>Always Load</b>. Supaya tidak ditanya lagi, tambahkan foldernya di <b>OPTIONS → Files → Trusted Locations</b>.</p>
+  <p>Sebagian besar command TOC dan spec mencari block berdasarkan nama: <code>TOC</code>, <code>SPEC</code>, block kop, dan beberapa lainnya. Block-block itu, beserta layer dan linetype-nya, ada di file starter yang tidak ikut di repo ini. Mulai gambar baru dari file itu, atau insert block-nya dari sana, sebelum memakai command-command tersebut.</p>
+  <p class="note"><strong>File starter</strong>Ada di Google Drive kantor. Kalau tidak ketemu, tanya Yeza.</p>
+  <p><a href="#ref">Daftar block</a> di bagian bawah berisi semua nama block dan tag attribute yang dibutuhkan.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="quick">
+  <h2><span class="bubble"><b>2</b><i>LSP</i></span>Alat cepat</h2>
+  <p>Ketik command-nya lalu jawab pertanyaannya. Tidak perlu setup selain block yang disebut di tiap kartu.</p>
+
+  <div class="grid">
+
+  <div class="cmd" id="ad">
+    <h3><span class="name">AD</span><span class="what">Menomori block sesuai urutan klik</span></h3>
+    <p class="file">Drawing Tools/AD incremently increase numbers in any block.lsp</p>
+    <p>Pilih block sumber, lalu klik block lain satu per satu. Semua angka di semua attribute naik sebesar step dikali jumlah klik. Dengan step 1, klik pertama dapat +1, klik kedua +2, dan seterusnya. Nilai lama di block tujuan tidak dipakai. Nol di depan tetap dipertahankan, jadi <code>A-01</code> menjadi <code>A-02</code>.</p>
+    <ol>
+      <li>Step per klik. Enter berarti 1. Bisa negatif.</li>
+      <li>Pilih block sumber.</li>
+      <li>Klik block tujuan secara berurutan. Enter untuk selesai.</li>
+    </ol>
+    <p>Attribute dengan tag <code>SKALA</code> tidak pernah diubah. Tambahkan tag lain di daftar bagian atas file kalau perlu.</p>
+  </div>
+
+  <div class="cmd" id="cc">
+    <h3><span class="name">CC</span><span class="what">Menyalin judul gambar</span></h3>
+    <p class="file">Drawing Tools/CC copy drawing title.lsp</p>
+    <p>Menyalin judul gambar dari satu block <code>JUDUL</code> ke block lain. <code>JUDUL</code> adalah label judul di bawah setiap gambar di model space.</p>
+    <ol>
+      <li>Pilih block <code>JUDUL</code> sumber.</li>
+      <li>Klik block tujuan. Enter untuk selesai.</li>
+    </ol>
+    <p class="needs">Block dengan attribute <code>JUDULGAMBAR</code>.</p>
+  </div>
+
+  <div class="cmd" id="divv">
+    <h3><span class="name">DIVV / DIVH</span><span class="what">Membagi kotak menjadi ruang sama besar</span></h3>
+    <p class="file">Drawing Tools/DIVV DIVH divide box into equal sized compartments.lsp</p>
+    <p>Untuk tampak kabinet. <kbd>DIVV</kbd> menambah sekat vertikal, <kbd>DIVH</kbd> menambah ambalan horizontal. Setiap sekat digambar sebagai dua garis dengan jarak setebal sekat, dan semua bukaan hasilnya sama besar.</p>
+    <ol>
+      <li>Jumlah ruang. Default 3.</li>
+      <li>Tebal sekat. Default 20.</li>
+      <li>Pilih outline kabinet.</li>
+    </ol>
+    <p>Command ini memakai bounding box outline, jadi hanya cocok untuk persegi panjang yang tidak diputar.</p>
+  </div>
+
+  <div class="cmd" id="ds">
+    <h3><span class="name">DS</span><span class="what">Garis bertahap untuk sisi melengkung</span></h3>
+    <p class="file">Drawing Tools/DS Taper Lines for rounded edge.lsp</p>
+    <p>Menggambar garis-garis sejajar di samping garis acuan, dengan jarak yang makin lebar sesuai rasio. Cara biasa untuk menampilkan permukaan lengkung di gambar tampak.</p>
+    <ol>
+      <li>Pilih LINE acuan. Polyline tidak bisa.</li>
+      <li>Jumlah garis. Default 8.</li>
+      <li>Rasio pertambahan. Default 1.35. Harus di atas 1.</li>
+      <li>Jarak ke garis terakhir. Tanda plus/minus menentukan sisi. Default 100.</li>
+    </ol>
+    <p>Jawaban terakhir dipakai sebagai default untuk berikutnya.</p>
+  </div>
+
+  <div class="cmd" id="numgrid">
+    <h3><span class="name">NUMGRID</span><span class="what">Grid angka</span></h3>
+    <p class="file">Drawing Tools/NUMGRID number grid.lsp</p>
+    <p>Menulis grid angka berupa TEXT, dari kiri ke kanan lalu baris demi baris ke bawah. Memakai layer, text style, dan ukuran teks yang sedang aktif.</p>
+    <p>Pertanyaan: angka awal, step, jumlah kolom, jumlah baris, jarak X, jarak Y, titik awal.</p>
+  </div>
+
+  <div class="cmd" id="pf">
+    <h3><span class="name">PF</span><span class="what">Menaruh daftar furnitur</span></h3>
+    <p class="file">Drawing Tools/PF place Furniture TOC.lsp</p>
+    <p>Membuat daftar furnitur di halaman index Shop Drawing Furniture. Meng-insert satu kolom block <code>FURNLIST</code> berjarak 140 unit, dengan kode seperti <code>CA1, CA2...</code> dan judul seperti <code>cabinet 1, cabinet 2...</code>.</p>
+    <p>Pertanyaan: prefix kode, judul dasar, nomor awal, nomor akhir, titik insert pertama.</p>
+    <p class="needs">Block <code>FURNLIST</code> dengan attribute <code>FURNCODE</code> dan <code>FURNTITLE</code>.</p>
+  </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="toc">
+  <h2><span class="bubble"><b>3</b><i>LSP</i></span>TOC dan layout</h2>
+  <p>Command-command ini menjadikan daftar isi (TOC) di model space sebagai daftar induk semua sheet. Judul sheet cukup diketik sekali di TOC, lalu command-nya menyalin judul itu ke kop layout yang sesuai.</p>
+
+  <h3 id="toc-block">Block TOC</h3>
+  <p>TOC adalah satu kolom block <code>TOC</code> di model space. Setiap block adalah satu baris dengan dua attribute:</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Tag</th><th>Isi</th><th>Contoh</th></tr>
+    <tr><td><code>PAGECODE</code></td><td>Kode sheet, <code>SDF-</code> atau <code>SDB-</code> ditambah dua digit. Harus sama dengan nama tab layout (huruf besar/kecil tidak berpengaruh).</td><td><code>SDF-03</code></td></tr>
+    <tr><td><code>PAGETITLE</code></td><td>Judul sheet yang tampil di kop.</td><td><code>Tampak kabinet 3</code></td></tr>
+  </table>
+  </div>
+  <p>Block TOC juga menyimpan kode spec yang dibaca SL. Penjelasannya ada di <a href="#spec-setup">menyiapkan kode spec</a>.</p>
+
+  <h3 id="toc-workflow">Alur kerja</h3>
+  <p class="tip"><strong>Kapan mulai</strong>Buat TOC saat gambar sudah sekitar 80 sampai 90% selesai. Sebelum itu, sheet masih sering ditambah, dihapus, dan diurutkan ulang setiap revisi, jadi TOC-nya harus diulang terus.</p>
+  <p>Di tahap ini seharusnya sudah ada satu layout untuk setiap sheet, masing-masing hasil copy dari layout template, dengan urutan yang benar.</p>
+  <ol class="steps">
+    <li><b>Taruh barisnya.</b> Di model space jalankan <kbd>PT</kbd> dengan prefix <code>SDF</code>, awal 1, akhir 12. Hasilnya <code>SDF-01</code> sampai <code>SDF-12</code> dengan judul kosong.</li>
+    <li><b>Isi judulnya.</b> Double-click baris pertama dan ketik judulnya. Lalu pakai <kbd>CT</kbd> untuk menyalin apa adanya, atau <kbd>CP</kbd> / <kbd>CPP</kbd> untuk menyalin dengan angka yang naik setiap klik.</li>
+    <li><b>Ganti nama layout.</b> Jalankan <kbd>WQB</kbd> dengan prefix <code>SDF-</code> (kali ini pakai strip) dan awal 1. Nama tab menjadi <code>SDF-01</code> sampai <code>SDF-12</code>, sama dengan TOC.</li>
+    <li><b>Sinkronkan setiap sheet.</b> Atur skala viewport, lalu jalankan <kbd>WS</kbd> di layout itu. Skala ditulis ke kop dan judul diambil dari TOC. Untuk sheet tanpa skala jalankan <kbd>WSS</kbd>.</li>
+    <li><b>Menyisipkan sheet belakangan.</b> Pilih baris-baris setelah sheet baru lalu jalankan <kbd>CTB</kbd> dengan +1 untuk menggeser kodenya. Jalankan <kbd>WQB</kbd> lagi, lalu <kbd>WS</kbd> di sheet yang berubah.</li>
+  </ol>
+  <p class="warn">PT menambahkan strip sendiri. WQB tidak, jadi ketik <code>SDF-</code> di sana. Keduanya memakai dua digit, jadi <code>SDF-01</code> di TOC cocok dengan tab <code>SDF-01</code>.</p>
+
+  <div class="cmd" id="pt">
+    <h3><span class="name">PT</span><span class="what">Menaruh baris TOC</span></h3>
+    <p class="file">TOC and Layouts/PT place table of contents block.lsp</p>
+    <p>Meng-insert satu kolom block <code>TOC</code> berjarak 140 unit dengan kode <code>SDF-01</code>, <code>SDF-02</code>... dan judul kosong.</p>
+    <p>Pertanyaan: prefix tanpa strip (<code>SDF</code> atau <code>SDB</code>), nomor awal, nomor akhir, titik insert pertama.</p>
+    <p class="needs">Block <code>TOC</code> dengan attribute <code>PAGECODE</code> dan <code>PAGETITLE</code>.</p>
+  </div>
+
+  <div class="cmd" id="ct">
+    <h3><span class="name">CT / CP / CPP</span><span class="what">Menyalin judul TOC</span></h3>
+    <p class="file">TOC and Layouts/CT, CP, CPP</p>
+    <p>Ketiganya menyalin <code>PAGETITLE</code> dari block <code>TOC</code> sumber ke block yang diklik setelahnya. Pilih sumber, klik tujuan, Enter untuk selesai. Bedanya ada di angka dalam judul:</p>
+    <div class="table-wrap">
+    <table>
+      <tr><th>Command</th><th>Angka</th><th>Sumber <code>Lantai 2 Kabinet 4</code> menghasilkan</th></tr>
+      <tr><td><kbd>CT</kbd></td><td>tetap</td><td><code>Lantai 2 Kabinet 4</code>, <code>Lantai 2 Kabinet 4</code>...</td></tr>
+      <tr><td><kbd>CP</kbd></td><td>semua +1 per klik</td><td><code>Lantai 3 Kabinet 5</code>, <code>Lantai 4 Kabinet 6</code>...</td></tr>
+      <tr><td><kbd>CPP</kbd></td><td>semua kecuali yang pertama +1 per klik</td><td><code>Lantai 2 Kabinet 5</code>, <code>Lantai 2 Kabinet 6</code>...</td></tr>
+    </table>
+    </div>
+    <p>CP dan CPP menghapus nol di depan (<code>09</code> menjadi <code>10</code>, tapi <code>05</code> menjadi <code>6</code>).</p>
+  </div>
+
+  <div class="cmd" id="cw">
+    <h3><span class="name">CW / CTB</span><span class="what">Mengubah kode TOC</span></h3>
+    <p class="file">TOC and Layouts/CW_copy_toc PAGE CODE.lsp, CTB_bump_toc_page code number_batch.lsp</p>
+    <p><kbd>CW</kbd> mirip CP tapi untuk <code>PAGECODE</code>: pilih sumber, lalu setiap tujuan mendapat kode +1, +2, dan seterusnya. Nol di depan tetap ada, jadi <code>SDF-09</code> menjadi <code>SDF-10</code> dan <code>SDF-01</code> menjadi <code>SDF-02</code>.</p>
+    <p><kbd>CTB</kbd> adalah versi banyak sekaligus. Pilih block sebanyak apa pun dengan window, masukkan angka (default 1, boleh negatif), dan angka itu ditambahkan ke nomor di akhir setiap kode. <code>SDB-05</code> menjadi <code>SDB-06</code>. Block tanpa <code>PAGECODE</code>, atau yang kodenya tidak berakhir dengan angka, dilewati dan ditampilkan di command line.</p>
+  </div>
+
+  <div class="cmd" id="wqb">
+    <h3><span class="name">WQB</span><span class="what">Ganti nama semua layout</span></h3>
+    <p class="file">TOC and Layouts/WQB_RENAME_LAYOUT_BATCH with 0 pad.LSP</p>
+    <p>Mengganti nama setiap tab layout, sesuai urutan tab, menjadi prefix + nomor dua digit.</p>
+    <p>Pertanyaan: prefix (boleh kosong), nomor awal.</p>
+    <div class="warn big" role="note">
+      <strong>Semua layout diganti namanya</strong>
+      WQB tidak menanyakan layout mana. Semua tab di gambar diganti namanya, termasuk cover dan sheet catatan. Cek urutan tab dulu, save sebelum menjalankannya, dan pakai <kbd>Ctrl+Z</kbd> kalau hasilnya salah.
+    </div>
+  </div>
+
+  <div class="cmd" id="ws">
+    <h3><span class="name">WS / WSS</span><span class="what">Sinkron skala dan judul ke sheet</span></h3>
+    <p class="file">TOC and Layouts/WS autosync..., WSS_autosync..._NTS.lsp</p>
+    <p>Jalankan di tab layout. Tidak ada pertanyaan.</p>
+    <ol>
+      <li><b>Skala.</b> <kbd>WS</kbd> membaca skala viewport dan menulis <code>1:50</code> (atau berapa pun skalanya) ke attribute <code>SCALE</code> di kop. <kbd>WSS</kbd> menulis <code>N.T.S</code>.</li>
+      <li><b>Judul.</b> Mencari block <code>TOC</code> di model space yang <code>PAGECODE</code>-nya sama dengan nama tab ini, lalu menulis <code>PAGETITLE</code>-nya ke <code>KOPTITLE</code> di kop.</li>
+    </ol>
+    <p>Kalau satu sheet punya lebih dari satu viewport, WS memakai yang ditemukan terakhir. Samakan skala semua viewport atau perbaiki nilainya manual.</p>
+    <p class="needs">Block kop <code>kop angleina1</code> di layout dengan attribute <code>SCALE</code> dan <code>KOPTITLE</code>, serta block <code>TOC</code> di model space.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="spec">
+  <h2><span class="bubble"><b>4</b><i>LSP</i></span>Spec dan leader</h2>
+
+  <h3 id="spec-how">Cara kerja spec leader</h3>
+  <p>Satu spec leader terdiri dari tiga objek: lingkaran kecil di benda yang diberi label, polyline putus-putus, dan block <code>SPEC</code> berisi kode dan deskripsi. <kbd>SL</kbd> menggambar ketiganya dan memberi ID tersembunyi yang sama (XData dengan nama app <code>POPULATE</code>). Dengan ID itu, RR, RZ, dan EE bisa menemukan dua objek lainnya saat salah satunya dipilih.</p>
+  <div class="warn big" role="note">
+    <strong>Jangan copy spec leader</strong>
+    COPY, Ctrl+C / Ctrl+V, dan MIRROR ikut menyalin ID tersembunyinya. Hasil copy dan aslinya jadi punya ID yang sama, dan RR, RZ, serta EE bisa memindah atau menghapus bagian dari grup yang salah. Selalu buat leader baru dengan <kbd>SL</kbd>.
+  </div>
+
+  <h3 id="spec-setup">Menyiapkan kode spec</h3>
+  <p>SL mengisi deskripsi dengan mencari kode spec di block <code>TOC</code> di model space. Jadi sebelum menaruh leader, buat satu baris <code>TOC</code> untuk setiap material: kode di <code>PAGECODE</code>, deskripsi lengkap di <code>PAGETITLE</code>.</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>PAGECODE</th><th>PAGETITLE</th></tr>
+    <tr><td><code>pclo</code></td><td>Panel fin. HPL Lamitak Mood Cloudy Cement DXP 1387BS</td></tr>
+  </table>
+  </div>
+  <p>Insert block <code>TOC</code> lalu double-click untuk mengetik, atau copy baris yang sudah ada lalu edit. Copy baris TOC tidak masalah; hanya spec leader yang punya ID tersembunyi. Huruf besar/kecil kode tidak berpengaruh, dan SL menulis kode dengan huruf kapital di block SPEC, jadi <code>pclo</code> tampil sebagai <code>PCLO</code>.</p>
+  <div class="tip">
+    <strong>Pakai kode yang gampang diingat</strong>
+    Pakai kode paling sederhana yang bisa diulang tanpa perlu dicek: satu huruf atau kata pendek untuk jenis barang, lalu 3 huruf pertama materialnya. <code>p</code> untuk panel, <code>k</code> untuk kabinet, <code>LED</code> untuk spec LED, <code>r</code> untuk router. Panel Cloudy Cement jadi <code>pclo</code>.
+  </div>
+  <div class="tip">
+    <strong>Atau tanpa kode</strong>
+    Block SPEC bisa diedit seperti block biasa. Tekan <b>Enter</b> saat SL menanyakan kode spec, dan SL menggambar block SPEC kosong. Double-click block-nya lalu ketik deskripsinya. Untuk memakai teks yang sama di block SPEC lain, pakai <a href="#cs">CS</a>, jangan copy-paste. Mengedit teks tidak mengubah ID tersembunyi, jadi RR, RZ, dan EE tetap jalan. <a href="#sy">SY</a> hanya mengganti deskripsi yang berasal dari TOC, jadi deskripsi yang diketik manual tidak ikut berubah.
+  </div>
+
+  <div class="cmd" id="sl">
+    <h3><span class="name">SL / SLSCALE</span><span class="what">Menaruh spec leader</span></h3>
+    <p class="file">Specs and Leaders/SL_SPEC_LEADER_w_embedded_index and continous scale state.lsp</p>
+    <ol>
+      <li>Penyebut skala, misalnya <code>15</code> untuk 1:15. Hanya ditanyakan pertama kali di satu sesi.</li>
+      <li>Kode spec, misalnya <code>pclo</code>. Tekan Enter untuk melewatinya dan mendapat block SPEC kosong.</li>
+      <li>Klik titik di objek. Titik ini menjadi pusat lingkaran.</li>
+      <li>Klik titik pertama leader, lalu titik-titik berikutnya. Enter untuk selesai.</li>
+    </ol>
+    <div class="tip">
+      <strong>Ganti skala: SLSCALE</strong>
+      SL mengingat skala sampai sesi selesai, jadi tidak akan bertanya lagi. Saat pindah ke gambar dengan skala lain, jalankan <kbd>SLSCALE</kbd> dulu dan masukkan penyebut skala yang baru. Kalau tidak, lingkaran, garis putus-putus, dan block SPEC akan keluar dengan ukuran skala lama.
+    </div>
+    <p class="needs">Block <code>SPEC</code> dengan attribute <code>PAGECODE</code> dan <code>SPECDESC</code>, linetype <code>HIDDEN</code> sudah di-load, dan <a href="#spec-setup">kode spec di TOC</a> (opsional).</p>
+    <p class="warn"><b>Jangan copy lingkaran, leader, dan SPEC untuk membuat yang baru.</b> Lihat <a href="#spec-how">peringatan di atas</a>. Jalankan SL lagi.</p>
+  </div>
+
+  <div class="cmd" id="rr">
+    <h3><span class="name">RR / RZ</span><span class="what">Menggambar ulang leader setelah dipindah</span></h3>
+    <p class="file">Specs and Leaders/RR..., RZ...</p>
+    <p>Pindahkan lingkaran atau block SPEC ke mana saja, lalu pilih salah satu bagian grupnya. Leader lama dihapus dan diganti yang baru, dengan linetype scale yang sama.</p>
+    <ul>
+      <li><kbd>RR</kbd> menggambar garis lurus kalau SPEC sejajar dengan pusat lingkaran. Kalau tidak, bentuknya L: naik atau turun dari lingkaran, lalu mendatar ke SPEC.</li>
+      <li><kbd>RZ</kbd> selalu menggambar bentuk Z: mendatar dari lingkaran, belok vertikal di tengah, lalu mendatar ke SPEC.</li>
+    </ul>
+    <p>Keduanya tidak mengecek objek lain yang menghalangi. Kalau leader barunya menabrak sesuatu, pindahkan SPEC lalu jalankan lagi.</p>
+  </div>
+
+  <div class="cmd" id="ee">
+    <h3><span class="name">EE</span><span class="what">Menghapus satu grup leader</span></h3>
+    <p class="file">Specs and Leaders/EE_erase_spec_leader_group.lsp</p>
+    <p>Pilih lingkaran, leader, atau block SPEC, dan ketiganya dihapus. Tidak ada konfirmasi. <kbd>Ctrl+Z</kbd> untuk mengembalikan.</p>
+  </div>
+
+  <div class="cmd" id="cs">
+    <h3><span class="name">CS</span><span class="what">Menyalin deskripsi spec</span></h3>
+    <p class="file">Specs and Leaders/CS copy spec.lsp</p>
+    <p>Menyalin <code>SPECDESC</code> dari satu block SPEC ke block yang diklik. Enter untuk selesai. Pakai ini, bukan copy-paste, kalau beberapa leader butuh teks yang sama.</p>
+    <p>Hanya deskripsi yang berubah. Kode di block tujuan tetap.</p>
+  </div>
+
+  <div class="cmd" id="sy">
+    <h3><span class="name">SY</span><span class="what">Mengganti spec di seluruh gambar</span></h3>
+    <p class="file">Specs and Leaders/SY synspec for document wide spec changes.lsp</p>
+    <p>Untuk saat klien mengganti material. Masukkan kode lama dan kode baru. SY mencari kedua deskripsinya di TOC, lalu mengganti setiap block SPEC di model space yang deskripsinya sama dengan yang lama.</p>
+    <p>Hanya deskripsi yang berubah. <code>PAGECODE</code> di setiap block SPEC tetap. Kedua kode harus ada di TOC, kalau tidak SY berhenti tanpa mengubah apa pun.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="ref">
+  <h2><span class="bubble"><b>5</b><i>LSP</i></span>Daftar block</h2>
+  <p>Semua nama block dan tag attribute yang dicari command-command ini. Huruf besar/kecil tidak berpengaruh.</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Block</th><th>Attribute</th><th>Lokasi</th><th>Dipakai oleh</th></tr>
+    <tr><td><code>TOC</code></td><td><code>PAGECODE</code>, <code>PAGETITLE</code></td><td>Model space</td><td>PT, CT, CP, CPP, CW, CTB, WS, WSS, SL, SY</td></tr>
+    <tr><td><code>kop angleina1</code></td><td><code>SCALE</code>, <code>KOPTITLE</code></td><td>Setiap layout</td><td>WS, WSS</td></tr>
+    <tr><td><code>SPEC</code></td><td><code>PAGECODE</code>, <code>SPECDESC</code> (multiline)</td><td>Model space</td><td>SL, RR, RZ, EE, CS, SY</td></tr>
+    <tr><td><code>JUDUL</code></td><td><code>JUDULGAMBAR</code></td><td>Model space</td><td>CC</td></tr>
+    <tr><td><code>FURNLIST</code></td><td><code>FURNCODE</code>, <code>FURNTITLE</code></td><td>Model space</td><td>PF</td></tr>
+  </table>
+  </div>
+  <p>Linetype <code>HIDDEN</code> harus sudah di-load untuk SL, RR, dan RZ.</p>
+</section>
+
+<footer class="titlestrip">
+  <div><span>Judul</span>Referensi LSP Suite</div>
+  <div><span>Digambar</span>Yeza</div>
+  <div><span>Skala</span>N.T.S</div>
+  <div><span>Sheet</span>1 dari 1</div>
+  <div class="wide">Dibagikan apa adanya. Coba command-nya dulu di salinan gambar. Silakan tanya AI mana saja untuk bantuan debugging dan troubleshooting. Mereka lebih paham kodenya daripada Yeza ;)</div>
+</footer>
+
+</main>
+</div>
+</body>
+</html>

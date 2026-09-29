@@ -22,7 +22,7 @@
   (setq newval srcval)
 
   (while (setq target (car (entsel "\nPick target: ")))
-    (setq newval (increment-all-numbers newval))
+    (setq newval (CW:increment-all-numbers newval))
 
     (setq tattribs (entnext target))
     (while (and tattribs (= (cdr (assoc 0 (entget tattribs))) "ATTRIB"))
@@ -41,7 +41,16 @@
   (princ "\nDone.")
 )
 
-(defun increment-all-numbers (str / result i c num numstr collecting)
+; Adds 1 to a digit string and keeps its zero padding, e.g. "01" -> "02", "09" -> "10"
+(defun CW:bump-padded (numstr / newstr)
+  (setq newstr (itoa (1+ (atoi numstr))))
+  (while (< (strlen newstr) (strlen numstr))
+    (setq newstr (strcat "0" newstr))
+  )
+  newstr
+)
+
+(defun CW:increment-all-numbers (str / result i c numstr collecting)
   (setq result ""
         i 0
         collecting nil
@@ -57,8 +66,7 @@
       (progn
         (if collecting
           (progn
-            (setq num (atoi numstr))
-            (setq result (strcat result (itoa (1+ num))))
+            (setq result (strcat result (CW:bump-padded numstr)))
             (setq numstr "")
             (setq collecting nil)
           )
@@ -68,10 +76,7 @@
     )
   )
   (if collecting
-    (progn
-      (setq num (atoi numstr))
-      (setq result (strcat result (itoa (1+ num))))
-    )
+    (setq result (strcat result (CW:bump-padded numstr)))
   )
   result
 )

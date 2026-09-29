@@ -53,7 +53,7 @@
       (if (and baseval (not (member (strcase tagname) *incattseq-skip-tags*)))
         (progn
           ; always increment from the SOURCE base value by (step * clickcount)
-          (setq newval (increment-all-numbers baseval (* step clickcount)))
+          (setq newval (AD:increment-all-numbers baseval (* step clickcount)))
           (setq att (entget tattribs))
           (setq att (subst (cons 1 newval) (assoc 1 att) att))
           (entmod att)
@@ -71,7 +71,7 @@
 ; Increments every run of digits in str by the given step (can be negative/decimal;
 ; decimal step is truncated to integer for the addition).
 ; Preserves leading zeros per number run and any surrounding text.
-(defun increment-all-numbers (str step / result i c num numstr collecting padLen newnum newstr)
+(defun AD:increment-all-numbers (str step / result i c num numstr collecting padLen newnum newstr)
   (setq result ""
         i 0
         collecting nil
