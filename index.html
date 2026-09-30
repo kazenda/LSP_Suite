@@ -44,7 +44,7 @@
         <li><a href="#spec-how">How it works</a></li>
         <li><a href="#spec-setup">Spec codes</a></li>
         <li><a href="#sl">SL / SLSCALE</a></li>
-        <li><a href="#rr">RR / RZ</a></li>
+        <li><a href="#rr">RR / RZ / RC</a></li>
         <li><a href="#ee">EE</a></li>
         <li><a href="#cs">CS</a></li>
         <li><a href="#sy">SY</a></li>
@@ -67,7 +67,6 @@
     <video src="images/rr-demo.mp4" autoplay loop muted playsinline></video>
   instead of the <img> line.
 
-  Search this file for "IMAGE:" to find the suggested spots.
   id.html is the Indonesian copy of this page. Change both when you edit.
 -->
 
@@ -75,14 +74,43 @@
   <div class="lang-switch" aria-label="Language"><span>EN</span><a href="id.html" hreflang="id" lang="id">ID</a></div>
   <div class="titleblock">
     <div class="tb-main">
+      <div class="tb-text">
       <p class="tb-kicker">AutoLISP for AutoCAD</p>
-      <h1>LSP Suite</h1>
-      <p class="lede">Commands I wrote for interior drafting. They take care of the repetitive parts: numbering sheets, keeping titles in sync with the table of contents, and drawing spec leaders that stay linked to their labels.</p>
+      <h1>LSP <span>Suite</span></h1>
+      <p class="lede">AutoLISP commands for interior drafting. They take care of the repetitive parts: numbering sheets, keeping titles in sync with the table of contents, and drawing spec leaders that stay linked to their labels.</p>
+      </div>
+    <svg class="tb-art" viewBox="0 0 410 245" aria-hidden="true" focusable="false">
+      <g class="cab" fill="none" stroke-width="1.5">
+        <rect class="draw" pathLength="1" x="20" y="30" width="170" height="180"/>
+        <path class="draw" pathLength="1" d="M20 45H190M20 195H190" style="--d:.35s"/>
+        <path class="draw" pathLength="1" d="M74 45V195M79 45V195M131 45V195M136 45V195" style="--d:.7s"/>
+      </g>
+      <g class="dimline" style="--d:1s">
+        <path d="M20 214V234M190 214V234M20 228H190M16 232l8-8M186 232l8-8" fill="none"/>
+        <text x="105" y="222" text-anchor="middle">1200</text>
+      </g>
+      <g class="leader" style="--d:1.3s">
+        <circle cx="105" cy="120" r="5"/>
+        <polyline class="la" points="110,120 196,120 196,72 282,72"/>
+        <polyline class="lb" points="110,120 196,120 196,162 282,162"/>
+      </g>
+      <g class="spec" style="--d:1.7s">
+        <g class="spec-move">
+          <rect x="283" y="69" width="6" height="6"/>
+          <text x="294" y="76">Panel fin. HPL</text>
+          <text x="294" y="91">Cloudy Cement</text>
+        </g>
+      </g>
+      <g class="xhair" transform="translate(350 125)">
+        <path d="M-35 0H35M0 -35V35" fill="none"/>
+        <rect x="-4" y="-4" width="8" height="8" fill="none"/>
+      </g>
+    </svg>
     </div>
     <div class="tb-cells">
-      <div><span>Drawn by</span>Yeza</div>
+      <div><span>Designed by</span>Yeza</div>
       <div><span>Discipline</span>Interior</div>
-      <div><span>Commands</span>23</div>
+      <div><span>Commands</span>24</div>
       <div><span>Source</span><a href="https://github.com/kazenda/LSP_Suite">kazenda/LSP_Suite</a></div>
     </div>
   </div>
@@ -132,6 +160,10 @@
       <li>Click targets in order. Enter to finish.</li>
     </ol>
     <p>Attributes tagged <code>SKALA</code> are never touched. Edit the list at the top of the file to protect more tags.</p>
+    <figure>
+      <video src="images/ad-demo.mp4" width="950" height="520" autoplay loop muted playsinline></video>
+      <figcaption>Numbering section titles in click order.</figcaption>
+    </figure>
   </div>
 
   <div class="cmd" id="cc">
@@ -143,9 +175,13 @@
       <li>Click the targets. Enter to finish.</li>
     </ol>
     <p class="needs">Blocks with a <code>JUDULGAMBAR</code> attribute.</p>
+    <figure>
+      <video src="images/cc-demo.mp4" width="1006" height="346" autoplay loop muted playsinline></video>
+      <figcaption>Copying one title onto other <code>JUDUL</code> blocks.</figcaption>
+    </figure>
   </div>
 
-  <div class="cmd" id="divv">
+  <div class="cmd wide" id="divv">
     <h3><span class="name">DIVV / DIVH</span><span class="what">Split a box into equal compartments</span></h3>
     <p class="file">Drawing Tools/DIVV DIVH divide box into equal sized compartments.lsp</p>
     <p>For cabinet elevations. <kbd>DIVV</kbd> adds vertical dividers, <kbd>DIVH</kbd> adds horizontal shelves. Each divider is drawn as two lines one thickness apart, and every clear opening comes out the same size.</p>
@@ -155,7 +191,16 @@
       <li>Pick the cabinet outline.</li>
     </ol>
     <p>It uses the outline's bounding box, so it only makes sense on rectangles that aren't rotated.</p>
-    <!-- IMAGE: screenshot, a cabinet outline before and after DIVV 4 -->
+    <div class="fig-pair">
+    <figure>
+      <video src="images/divv-demo.mp4" width="526" height="670" autoplay loop muted playsinline></video>
+      <figcaption>DIVV adds vertical dividers.</figcaption>
+    </figure>
+    <figure>
+      <video src="images/divh-demo.mp4" width="588" height="658" autoplay loop muted playsinline></video>
+      <figcaption>DIVH adds horizontal shelves.</figcaption>
+    </figure>
+    </div>
   </div>
 
   <div class="cmd" id="ds">
@@ -169,7 +214,10 @@
       <li>Distance to the last line. The sign picks the side. Default 100.</li>
     </ol>
     <p>Your answers become the defaults for the next run.</p>
-    <!-- IMAGE: screenshot, the taper lines on a rounded edge -->
+    <figure>
+      <video src="images/ds-demo.mp4" width="886" height="600" autoplay loop muted playsinline></video>
+      <figcaption>Taper lines drawn next to a reference line.</figcaption>
+    </figure>
   </div>
 
   <div class="cmd" id="numgrid">
@@ -184,7 +232,7 @@
     <p class="file">Drawing Tools/PF place Furniture TOC.lsp</p>
     <p>Builds the furniture list on the index page of a furniture shop drawing set. Inserts a column of <code>FURNLIST</code> blocks, 140 units apart, with codes like <code>CA1, CA2...</code> and titles like <code>cabinet 1, cabinet 2...</code>.</p>
     <p>Prompts: code prefix, title base, start number, end number, first insertion point.</p>
-    <p class="needs">Block <code>FURNLIST</code> with attributes <code>FURNCODE</code> and <code>FURNTITLE</code>.</p>
+    <p class="needs">Block <code>FURNLIST</code> with attributes <code>FURNCODE</code> and <code>FURNTITLE</code>, drawn at 1:20 scale.</p>
   </div>
 
   </div>
@@ -196,7 +244,7 @@
   <p>These commands treat the table of contents in model space as the master list of sheets. You type each sheet title once in the TOC, and the commands copy it onto the title block of the matching layout.</p>
 
   <h3 id="toc-block">The TOC block</h3>
-  <p>A TOC is a column of <code>TOC</code> blocks in model space. Each one is a row with two attributes:</p>
+  <p>A TOC is a column of <code>TOC</code> blocks in model space, drawn at 1:20 scale. Each one is a row with two attributes:</p>
   <div class="table-wrap">
   <table>
     <tr><th>Tag</th><th>Holds</th><th>Example</th></tr>
@@ -205,7 +253,10 @@
   </table>
   </div>
   <p>TOC blocks also hold the spec codes that SL reads. That's covered in <a href="#spec-setup">setting up spec codes</a>.</p>
-  <!-- IMAGE: screenshot, a filled-in TOC column in model space -->
+  <figure>
+    <video src="images/toc-setup.mp4" width="1472" height="682" autoplay loop muted playsinline></video>
+    <figcaption>Typing a code into a TOC row.</figcaption>
+  </figure>
 
   <h3 id="toc-workflow">Workflow</h3>
   <p class="tip"><strong>When to start</strong>Build the TOC when the drawings are about 80 to 90% done. Before that, sheets get added, removed and reordered with every revision, and you'd be redoing the TOC each time.</p>
@@ -224,6 +275,10 @@
     <p class="file">TOC and Layouts/PT place table of contents block.lsp</p>
     <p>Inserts a column of <code>TOC</code> blocks 140 units apart with codes <code>SDF-01</code>, <code>SDF-02</code>... and blank titles.</p>
     <p>Prompts: prefix without the dash (<code>SDF</code> or <code>SDB</code>), start number, end number, first insertion point.</p>
+    <figure>
+      <video src="images/pt-demo.mp4" width="878" height="564" autoplay loop muted playsinline></video>
+      <figcaption>PT placing <code>SDF-01</code> to <code>SDF-12</code>.</figcaption>
+    </figure>
     <p class="needs">Block <code>TOC</code> with attributes <code>PAGECODE</code> and <code>PAGETITLE</code>.</p>
   </div>
 
@@ -240,6 +295,18 @@
     </table>
     </div>
     <p>CP and CPP drop leading zeros (<code>09</code> becomes <code>10</code>, but <code>05</code> becomes <code>6</code>).</p>
+    <figure>
+      <video src="images/ct-demo.mp4" width="896" height="520" autoplay loop muted playsinline></video>
+      <figcaption>CT: the title is copied as-is.</figcaption>
+    </figure>
+    <figure>
+      <video src="images/cp-demo.mp4" width="856" height="484" autoplay loop muted playsinline></video>
+      <figcaption>CP: every number goes up.</figcaption>
+    </figure>
+    <figure>
+      <video src="images/cpp-demo.mp4" width="880" height="544" autoplay loop muted playsinline></video>
+      <figcaption>CPP: every number except the first goes up.</figcaption>
+    </figure>
   </div>
 
   <div class="cmd" id="cw">
@@ -247,6 +314,14 @@
     <p class="file">TOC and Layouts/CW_copy_toc PAGE CODE.lsp, CTB_bump_toc_page code number_batch.lsp</p>
     <p><kbd>CW</kbd> works like CP but on <code>PAGECODE</code>: pick a source, and each target gets the code +1, +2 and so on. Padding is kept, so <code>SDF-09</code> gives <code>SDF-10</code> and <code>SDF-01</code> gives <code>SDF-02</code>.</p>
     <p><kbd>CTB</kbd> is the batch version. Window-select any number of blocks, give an amount (default 1, negative allowed), and it adds that to the number at the end of each code. <code>SDB-05</code> becomes <code>SDB-06</code>. Blocks without a <code>PAGECODE</code>, or whose code doesn't end in a number, are skipped and listed.</p>
+    <figure>
+      <video src="images/cw-demo.mp4" width="854" height="550" autoplay loop muted playsinline></video>
+      <figcaption>CW: each click gets the next code.</figcaption>
+    </figure>
+    <figure>
+      <video src="images/ctb-demo.mp4" width="858" height="518" autoplay loop muted playsinline></video>
+      <figcaption>CTB: shifting a selection of codes.</figcaption>
+    </figure>
   </div>
 
   <div class="cmd" id="wqb">
@@ -254,10 +329,15 @@
     <p class="file">TOC and Layouts/WQB_RENAME_LAYOUT_BATCH with 0 pad.LSP</p>
     <p>Renames every layout tab in tab order to prefix + number, padded to two digits.</p>
     <p>Prompts: prefix (can be blank), start number.</p>
+    <figure>
+      <video src="images/wqb-demo.mp4" width="614" height="258" autoplay loop muted playsinline></video>
+      <figcaption>WQB renaming <code>Layout1</code> to <code>Layout7</code> as <code>SDF-01</code> to <code>SDF-07</code>.</figcaption>
+    </figure>
     <div class="warn big" role="note">
       <strong>Renames every layout</strong>
       WQB doesn't ask which layouts. It renames every tab in the drawing, cover and note sheets included. Check the tab order first, save before running it, and use <kbd>Ctrl+Z</kbd> if the result is wrong.
     </div>
+    <p class="note"><strong>Names already in use</strong>WQB can't give a layout a name that another tab already has. If the tabs are already named <code>SDF-01</code>, <code>SDF-02</code> and so on, run WQB once with a throwaway prefix like <code>x</code>, then run it again with <code>SDF-</code>.</p>
   </div>
 
   <div class="cmd" id="ws">
@@ -268,7 +348,14 @@
       <li><b>Scale.</b> <kbd>WS</kbd> reads the viewport's scale and writes <code>1:50</code> (or whatever it is) into the title block's <code>SCALE</code> attribute. <kbd>WSS</kbd> writes <code>N.T.S</code> instead.</li>
       <li><b>Title.</b> Finds the <code>TOC</code> block in model space whose <code>PAGECODE</code> matches this tab's name and writes its <code>PAGETITLE</code> into <code>KOPTITLE</code> on the title block.</li>
     </ol>
-    <!-- IMAGE: two screenshots side by side, title block before and after WS -->
+    <figure>
+      <video src="images/ws-demo.mp4" width="1206" height="532" autoplay loop muted playsinline></video>
+      <figcaption>WS pulls the title from the TOC and writes the viewport scale.</figcaption>
+    </figure>
+    <figure>
+      <video src="images/wss-demo.mp4" width="1306" height="618" autoplay loop muted playsinline></video>
+      <figcaption>WSS writes <code>N.T.S</code> instead of a scale.</figcaption>
+    </figure>
     <p>If a sheet has more than one viewport, WS uses whichever it finds last, so set them all to the same scale or fix the value by hand.</p>
     <p class="needs">Title block <code>kop angleina1</code> on the layout with attributes <code>SCALE</code> and <code>KOPTITLE</code>, and <code>TOC</code> blocks in model space.</p>
   </div>
@@ -279,11 +366,10 @@
   <h2><span class="bubble"><b>4</b><i>LSP</i></span>Specs and leaders</h2>
 
   <h3 id="spec-how">How a spec leader works</h3>
-  <p>A spec leader is three objects: a small circle on the thing you're labelling, a dashed polyline, and a <code>SPEC</code> block showing the code and description. <kbd>SL</kbd> draws all three and stamps them with a shared hidden ID (XData under the app name <code>POPULATE</code>). That ID lets RR, RZ and EE find the other two when you pick any one of them.</p>
-  <!-- IMAGE: screenshot, one spec leader with the circle, leader and SPEC block labelled -->
+  <p>A spec leader is three objects: a small circle on the thing you're labelling, a dashed polyline, and a <code>SPEC</code> block showing the code and description. <kbd>SL</kbd> draws all three and stamps them with a shared hidden ID (XData under the app name <code>POPULATE</code>). That ID lets RR, RZ, RC and EE find the other two when you pick any one of them.</p>
   <div class="warn big" role="note">
     <strong>Don't copy spec leaders</strong>
-    COPY, Ctrl+C / Ctrl+V and MIRROR all copy the hidden ID. The copy and the original then share one ID, and RR, RZ and EE can move or erase pieces of the wrong group. Always place a new leader with <kbd>SL</kbd>.
+    COPY, Ctrl+C / Ctrl+V and MIRROR all copy the hidden ID. The copy and the original then share one ID, and RR, RZ, RC and EE can move or erase pieces of the wrong group. Always place a new leader with <kbd>SL</kbd>.
   </div>
 
   <h3 id="spec-setup">Setting up spec codes</h3>
@@ -294,7 +380,10 @@
     <tr><td><code>pclo</code></td><td>Panel fin. HPL Lamitak Mood Cloudy Cement DXP 1387BS</td></tr>
   </table>
   </div>
-  <!-- IMAGE: screenshot, a column of spec rows in the TOC -->
+  <figure>
+    <img src="images/spec-codes-example.png" width="1704" height="504" alt="A column of TOC rows with spec codes like qspa and PALM next to their material descriptions" loading="lazy">
+    <figcaption>Spec rows in the TOC: code on the left, description on the right.</figcaption>
+  </figure>
   <p>Insert a <code>TOC</code> block and double-click it to type, or copy an existing row and edit it. Copying TOC rows is fine; only spec leaders carry the hidden ID. Codes aren't case-sensitive, and SL writes them in capitals on the SPEC block, so <code>pclo</code> shows as <code>PCLO</code>.</p>
   <div class="tip">
     <strong>Pick codes you'll remember</strong>
@@ -302,7 +391,7 @@
   </div>
   <div class="tip">
     <strong>Or skip the codes</strong>
-    The SPEC block can be edited like any other block. Press <b>Enter</b> at SL's spec code prompt and it draws an empty SPEC block. Double-click it and type the description. To put the same text on another SPEC block, use <a href="#cs">CS</a> instead of copy/paste. Editing the text doesn't touch the hidden ID, so RR, RZ and EE keep working. <a href="#sy">SY</a> only swaps descriptions that come from the TOC, so it won't touch hand-typed ones.
+    The SPEC block can be edited like any other block. Press <b>Enter</b> at SL's spec code prompt and it draws an empty SPEC block. Double-click it and type the description. To put the same text on another SPEC block, use <a href="#cs">CS</a> instead of copy/paste. Editing the text doesn't touch the hidden ID, so RR, RZ, RC and EE keep working. <a href="#sy">SY</a> only swaps descriptions that come from the TOC, so it won't touch hand-typed ones.
   </div>
 
   <div class="cmd" id="sl">
@@ -314,7 +403,10 @@
       <li>Click a point on the object. That becomes the circle centre.</li>
       <li>Click the first leader point, then more points. Enter to finish.</li>
     </ol>
-    <!-- IMAGE: short recording, placing one leader with SL -->
+    <figure>
+      <video src="images/sl-demo.mp4" width="1408" height="756" autoplay loop muted playsinline></video>
+      <figcaption>Placing leaders with codes from the TOC.</figcaption>
+    </figure>
     <div class="tip">
       <strong>Changing scale: SLSCALE</strong>
       SL remembers the scale for the rest of the session, so it won't ask again. When you move to a drawing at a different scale, run <kbd>SLSCALE</kbd> first and enter the new denominator. Otherwise the circle, dashes and SPEC block come out at the old size.
@@ -324,21 +416,29 @@
   </div>
 
   <div class="cmd" id="rr">
-    <h3><span class="name">RR / RZ</span><span class="what">Redraw a leader after moving things</span></h3>
-    <p class="file">Specs and Leaders/RR..., RZ...</p>
+    <h3><span class="name">RR / RZ / RC</span><span class="what">Redraw a leader after moving things</span></h3>
+    <p class="file">Specs and Leaders/RR..., RZ..., RC...</p>
     <p>Move the circle or the SPEC block wherever you like, then pick any part of the group. The old leader is deleted and a clean one is drawn, keeping its linetype scale.</p>
     <ul>
       <li><kbd>RR</kbd> draws a straight line if the SPEC is level with the circle centre. Otherwise it draws an L: up or down out of the circle, then across into the SPEC.</li>
       <li><kbd>RZ</kbd> always draws a Z: across out of the circle, a vertical jog halfway, then across into the SPEC.</li>
+      <li><kbd>RC</kbd> draws a C: out of the circle on the side away from the SPEC, a vertical jog, then back across into the SPEC. If the SPEC is exactly level with the circle centre, a C can't be formed and nothing changes. Use RR or RZ for that one.</li>
     </ul>
-    <!-- IMAGE: short recording, move a SPEC block, run RR, then RZ on the same group -->
-    <p>Neither checks for other geometry in the way. If the new leader crosses something, move the SPEC and run it again.</p>
+    <figure>
+      <video src="images/rr-rz-rc-demo.mp4" width="1268" height="676" autoplay loop muted playsinline></video>
+      <figcaption>Moving a SPEC block, then redrawing the leader with RR, RZ and RC.</figcaption>
+    </figure>
+    <p>None of them check for other geometry in the way. If the new leader crosses something, move the SPEC and run it again.</p>
   </div>
 
   <div class="cmd" id="ee">
     <h3><span class="name">EE</span><span class="what">Erase a whole leader group</span></h3>
     <p class="file">Specs and Leaders/EE_erase_spec_leader_group.lsp</p>
     <p>Pick the circle, leader or SPEC block and all three are deleted. It doesn't ask for confirmation. <kbd>Ctrl+Z</kbd> brings them back.</p>
+    <figure>
+      <video src="images/ee-demo.mp4" width="1260" height="656" autoplay loop muted playsinline></video>
+      <figcaption>EE erasing a whole group at once.</figcaption>
+    </figure>
   </div>
 
   <div class="cmd" id="cs">
@@ -346,6 +446,10 @@
     <p class="file">Specs and Leaders/CS copy spec.lsp</p>
     <p>Copies <code>SPECDESC</code> from one SPEC block to the ones you click. Enter to finish. Use this instead of copy/paste when several leaders need the same text.</p>
     <p>Only the description changes. The code on the target stays as it was.</p>
+    <figure>
+      <video src="images/cs-demo.mp4" width="1298" height="644" autoplay loop muted playsinline></video>
+      <figcaption>CS copying a description to another SPEC block.</figcaption>
+    </figure>
   </div>
 
   <div class="cmd" id="sy">
@@ -365,23 +469,30 @@
     <tr><th>Block</th><th>Attributes</th><th>Where</th><th>Used by</th></tr>
     <tr><td><code>TOC</code></td><td><code>PAGECODE</code>, <code>PAGETITLE</code></td><td>Model space</td><td>PT, CT, CP, CPP, CW, CTB, WS, WSS, SL, SY</td></tr>
     <tr><td><code>kop angleina1</code></td><td><code>SCALE</code>, <code>KOPTITLE</code></td><td>Each layout</td><td>WS, WSS</td></tr>
-    <tr><td><code>SPEC</code></td><td><code>PAGECODE</code>, <code>SPECDESC</code> (multiline)</td><td>Model space</td><td>SL, RR, RZ, EE, CS, SY</td></tr>
+    <tr><td><code>SPEC</code></td><td><code>PAGECODE</code>, <code>SPECDESC</code> (multiline)</td><td>Model space</td><td>SL, RR, RZ, RC, EE, CS, SY</td></tr>
     <tr><td><code>JUDUL</code></td><td><code>JUDULGAMBAR</code></td><td>Model space</td><td>CC</td></tr>
     <tr><td><code>FURNLIST</code></td><td><code>FURNCODE</code>, <code>FURNTITLE</code></td><td>Model space</td><td>PF</td></tr>
   </table>
   </div>
-  <p>Linetype <code>HIDDEN</code> must be loaded for SL, RR and RZ.</p>
+  <p>Linetype <code>HIDDEN</code> must be loaded for SL, RR, RZ and RC.</p>
 </section>
+
+<aside class="ask">
+  <strong>Something you keep doing by hand?</strong>
+  <p>Ask Yeza. She makes custom LSP commands and dynamic blocks for the repetitive parts of a drawing.</p>
+</aside>
 
 <footer class="titlestrip">
   <div><span>Title</span>LSP Suite reference</div>
-  <div><span>Drawn by</span>Yeza</div>
+  <div><span>Designed by</span>Yeza</div>
   <div><span>Scale</span>N.T.S</div>
   <div><span>Sheet</span>1 of 1</div>
+  <div><span>Last updated</span><time id="updated" datetime="2026-09-30">30 Sep 2026</time></div>
   <div class="wide">Shared as-is. Try the commands on a copy of a drawing first. Feel free to ask any AI for debugging and troubleshooting help. They'd understand the code better than Yeza ;)</div>
 </footer>
 
 </main>
 </div>
+<script src="site.js"></script>
 </body>
 </html>

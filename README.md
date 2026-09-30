@@ -10,7 +10,7 @@ AutoLISP commands for interior drafting in AutoCAD: numbering sheets, keeping la
 | --- | --- |
 | `Drawing Tools` | AD, CC, DIVV / DIVH, DS, NUMGRID, PF |
 | `TOC and Layouts` | PT, CT, CP, CPP, CW, CTB, WQB, WS, WSS |
-| `Specs and Leaders` | SL / SLSCALE, RR, RZ, EE, CS, SY |
+| `Specs and Leaders` | SL / SLSCALE, RR, RZ, RC, EE, CS, SY |
 
 ## Install
 

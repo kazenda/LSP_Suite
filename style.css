@@ -1,11 +1,11 @@
 /* LSP Suite: blueprint theme */
 
 :root {
-  /* AutoCAD's dark model space is rgb(33, 40, 48) */
-  --paper: #212830;
-  --paper-deep: #1a2027;
-  --grid-fine: rgba(120, 140, 165, 0.08);
-  --grid-major: rgba(120, 140, 165, 0.18);
+  /* a shade darker than AutoCAD's model space, rgb(33, 40, 48), so body text reads well */
+  --paper: #1a1f26;
+  --paper-deep: #14181d;
+  --grid-fine: rgba(120, 140, 165, 0.035);
+  --grid-major: rgba(120, 140, 165, 0.08);
   --ink: #e6edf5;
   --ink-soft: #97a8bc;
   --line: rgba(170, 195, 225, 0.28);
@@ -15,6 +15,8 @@
   --cyan: #7fd3ff;
   --red: #ff7b6b;         /* redline */
   --red-tint: rgba(255, 123, 107, 0.12);
+  --magenta: #ff6bdc;     /* attribute text, like the SPEC block */
+  --blue: #6f9bff;        /* spec leader linetype */
   --code-bg: rgba(127, 211, 255, 0.12);
   --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
   --sans: "IBM Plex Sans", system-ui, "Segoe UI", Roboto, sans-serif;
@@ -34,7 +36,7 @@ body {
     linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
     linear-gradient(var(--grid-fine) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-fine) 1px, transparent 1px),
-    radial-gradient(ellipse at 30% 0%, #28323d 0%, var(--paper) 55%, var(--paper-deep) 100%);
+    radial-gradient(ellipse at 30% 0%, #212830 0%, var(--paper) 55%, var(--paper-deep) 100%);
   background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px, 100% 100%;
   background-attachment: fixed;
 }
@@ -61,7 +63,7 @@ b, strong { color: #fff; }
 /* ---------- layout ---------- */
 
 .layout {
-  max-width: 1160px;
+  max-width: 1040px;  /* narrow enough that full-width text lines stay readable */
   margin: 0 auto;
   padding: 0 16px;
   display: grid;
@@ -83,9 +85,39 @@ nav.side {
   letter-spacing: 0.06em;
 }
 nav.side ul { list-style: none; margin: 0; padding: 0; }
-nav.side a { color: var(--ink-soft); text-decoration: none; }
-nav.side a:hover { color: var(--accent); }
+nav.side a {
+  position: relative;
+  color: var(--ink-soft);
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 5px;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+nav.side a:hover { color: var(--accent); text-decoration-color: rgba(255, 214, 107, 0.45); }
 nav.side .group > a { color: var(--ink); font-weight: 600; }
+/* the section you're reading, set by nav.js: underline plus a blinking dot,
+   which sits on the vertical rule for sub-items */
+nav.side a.active {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+nav.side a.active::before {
+  content: "";
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(255, 214, 107, 0.6);
+}
+@media (prefers-reduced-motion: no-preference) {
+  nav.side a.active::before { animation: nav-blink 1.6s ease-in-out infinite alternate; }
+}
+@keyframes nav-blink { from { opacity: 1; } to { opacity: 0.15; } }
+nav.side .group > a.in-group { color: var(--accent); }
 nav.side .label {
   display: block;
   color: var(--ink-soft);
@@ -163,7 +195,68 @@ nav.side .label {
   text-transform: uppercase;
   margin: 0 0 14px;
 }
+.titleblock h1 span { color: var(--accent); }
 .titleblock .lede { font-size: 1.08rem; color: var(--ink); margin: 0; max-width: 62ch; }
+
+/* hero drawing: a cabinet with DIVV dividers and a spec leader */
+.titleblock .tb-main { display: grid; gap: 18px; align-items: center; }
+@media (min-width: 760px) {
+  .titleblock .tb-main { grid-template-columns: 1fr minmax(300px, 44%); }
+}
+.tb-art { width: 100%; max-width: 420px; height: auto; justify-self: center; }
+.tb-art .cab { stroke: var(--ink-soft); }
+.tb-art .dimline { stroke: var(--ink-soft); stroke-width: 1; opacity: 0.8; }
+.tb-art .dimline text { fill: var(--ink-soft); stroke: none; font: 11px var(--mono); }
+.tb-art .leader circle { fill: none; stroke: var(--blue); stroke-width: 1.5; }
+.tb-art .leader polyline { fill: none; stroke: var(--blue); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.tb-art .leader .lb { opacity: 0; }
+.tb-art .spec rect { fill: var(--magenta); }
+.tb-art .spec text { fill: var(--magenta); font: 12px var(--mono); }
+.tb-art .xhair { stroke: var(--ink); stroke-width: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* intro: the drawing sketches itself in */
+  .tb-art .draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: tb-draw 0.8s ease-out var(--d, 0s) forwards;
+  }
+  .tb-art .dimline, .tb-art .leader, .tb-art .spec {
+    opacity: 0;
+    animation: tb-fade 0.5s ease-out var(--d, 0s) forwards;
+  }
+  /* loop: the crosshair drags the SPEC down and back, the leader re-routes each time */
+  .tb-art .xhair     { animation: tb-xhair 10s ease-in-out 2.4s infinite both; }
+  .tb-art .spec-move { animation: tb-spec 10s ease-in-out 2.4s infinite both; }
+  .tb-art .leader .la { animation: tb-la 10s linear 2.4s infinite both; }
+  .tb-art .leader .lb { animation: tb-lb 10s linear 2.4s infinite both; }
+}
+@keyframes tb-draw { to { stroke-dashoffset: 0; } }
+@keyframes tb-fade { to { opacity: 1; } }
+@keyframes tb-xhair {
+  0%       { transform: translate(286px, 72px); }
+  8%, 18%  { transform: translate(350px, 125px); }
+  26%      { transform: translate(286px, 72px); }
+  40%      { transform: translate(286px, 162px); }
+  50%, 58% { transform: translate(350px, 205px); }
+  66%      { transform: translate(286px, 162px); }
+  80%, 100% { transform: translate(286px, 72px); }
+}
+@keyframes tb-spec {
+  0%, 26%   { transform: translate(0, 0); }
+  40%, 66%  { transform: translate(0, 90px); }
+  80%, 100% { transform: translate(0, 0); }
+}
+@keyframes tb-la {
+  0%, 40%   { opacity: 1; }
+  44%, 84%  { opacity: 0; }
+  90%, 100% { opacity: 1; }
+}
+@keyframes tb-lb {
+  0%, 44%   { opacity: 0; }
+  50%, 80%  { opacity: 1; }
+  84%, 100% { opacity: 0; }
+}
 .titleblock .tb-cells {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -265,7 +358,6 @@ h3 {
   margin: 36px 0 10px;
   color: var(--cyan);
 }
-p, li { max-width: 74ch; }
 
 /* ---------- download button ---------- */
 
@@ -371,7 +463,6 @@ p, li { max-width: 74ch; }
   background: var(--panel);
   padding: 12px 16px;
   margin: 18px 0;
-  max-width: 74ch;
 }
 .legend .name {
   font-family: var(--mono);
@@ -427,6 +518,9 @@ p, li { max-width: 74ch; }
 @media (min-width: 760px) {
   .grid { grid-template-columns: 1fr 1fr; }
   .grid .cmd { margin: 14px 0; }
+  .grid .cmd.wide { grid-column: 1 / -1; }
+  .fig-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .fig-pair figure { margin-bottom: 0; }
 }
 
 /* ---------- tables ---------- */
@@ -546,10 +640,29 @@ figcaption {
   margin-top: 6px;
 }
 
+/* ---------- request box above the footer ---------- */
+
+.ask {
+  margin-top: 80px;
+  padding: 18px 22px;
+  border: 1.5px dashed var(--magenta);
+  background: rgba(255, 107, 220, 0.06);
+}
+.ask strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--magenta);
+  margin-bottom: 4px;
+}
+.ask p { margin: 0; }
+
 /* ---------- footer title strip ---------- */
 
 footer.titlestrip {
-  margin-top: 80px;
+  margin-top: 28px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   border: 2px solid var(--line-strong);
@@ -558,7 +671,7 @@ footer.titlestrip {
   background: var(--panel);
 }
 @media (min-width: 640px) {
-  footer.titlestrip { grid-template-columns: 2fr 1fr 1fr 1fr; }
+  footer.titlestrip { grid-template-columns: 2fr 1fr 1fr 1fr 1.3fr; }
 }
 footer.titlestrip div {
   padding: 8px 14px 10px;
@@ -571,6 +684,9 @@ footer.titlestrip span {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-soft);
+}
+@media (max-width: 639px) {
+  footer.titlestrip div:first-child { grid-column: 1 / -1; }
 }
 footer.titlestrip .wide { grid-column: 1 / -1; font-family: var(--sans); color: var(--ink-soft); }
 
